@@ -6,8 +6,11 @@ const router = express.Router();
 
 // Helper to get BASE_URL dynamically
 const getBaseUrl = (req) => {
-  return process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+  if (process.env.BASE_URL) return process.env.BASE_URL;
+  const proto = req.headers['x-forwarded-proto'] || req.protocol || 'http';
+  return `${proto}://${req.get('host')}`;
 };
+
 
 // Health-check route at GET /
 router.get('/', (req, res) => {
